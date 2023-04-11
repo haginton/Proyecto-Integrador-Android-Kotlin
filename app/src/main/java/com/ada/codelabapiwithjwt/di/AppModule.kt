@@ -1,7 +1,10 @@
 package com.ada.codelabapiwithjwt.di
 
 import android.content.Context
+import androidx.room.Room
 import com.ada.codelabapiwithjwt.SHARED_PREFERENCES_FILE_NAME
+import com.ada.codelabapiwithjwt.data.AppDatabase
+import com.ada.codelabapiwithjwt.data.dao.ProductDao
 import com.ada.codelabapiwithjwt.network.JWTInterceptor
 import com.ada.codelabapiwithjwt.network.service.AuthService
 import com.ada.codelabapiwithjwt.network.service.ProductsService
@@ -24,6 +27,19 @@ import java.util.concurrent.TimeUnit
 @Module
 @InstallIn(ActivityComponent::class)
 object AppModule {
+
+    @Provides
+    fun provideProductDao( appDatabase: AppDatabase): ProductDao{
+        return appDatabase.productDao()
+    }
+
+    @Provides
+    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase{
+        return Room.databaseBuilder(
+            appContext,
+            AppDatabase::class.java, "database-name"
+        ).build()
+    }
 
     @Provides
     fun provideProductService(retrofit: Retrofit): ProductsService{
